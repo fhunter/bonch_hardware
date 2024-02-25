@@ -51,6 +51,8 @@ def post_data():
     """ Data receiver endpoing """
     ip_addr = request.environ.get("REMOTE_ADDR")
     hostname = request.environ.get("REMOTE_HOST")
+    if hostname is None:
+        hostname = socket.gethostbyaddr(ip_addr)[0]
     if hostname == "":
         hostname = ip_addr
     data = request.json
