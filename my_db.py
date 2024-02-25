@@ -5,7 +5,7 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 
@@ -15,6 +15,7 @@ Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
 class ComputerHardware(Base):
+    """ SQL table for computer hardware. data field contains json as string """
     __tablename__ = 'computer_hardware'
 
     id = Column(Integer, primary_key=True)
