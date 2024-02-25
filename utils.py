@@ -12,19 +12,21 @@ def makesummary(data):
         result = str(data)
     return result
 
-def json2tree(data):
-    outdata = "<ul class='tree'>\n"
-#    outdata = "<ul>"
+def json2tree(data, first= True):
+    if first:
+        outdata = "<ul class='tree'>\n"
+    else:
+        outdata = "<ul>"
     if isinstance(data, dict):
         summary = makesummary(data)
         lst = ""
         if "children" in data:
-            lst = json2tree(data["children"])
+            lst = json2tree(data["children"], False)
         outdata += "<li><details open><summary>" + summary + "</summary>" + lst + "</details></li>"
     elif isinstance(data, list):
         for value in data:
             summary = makesummary(value)
-            outdata += "<li><details open><summary>" + summary + "</summary>" + json2tree(value) + "</details></li>"
+            outdata += "<li><details open><summary>" + summary + "</summary>" + json2tree(value, False) + "</details></li>"
     else:
         return str(data)
     outdata += "</ul>"
