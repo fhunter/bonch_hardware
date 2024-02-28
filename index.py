@@ -3,10 +3,11 @@
 
 """ Hardware configuration monitoring application """
 
-import bottle
 import datetime
 import socket
+import bottle
 #from bottle import view, request, response, static_file, abort, redirect
+from sqlalchemy import or_, func
 from bottle import view, request, abort, static_file
 import settings
 from my_db import Session, ComputerHardware
@@ -25,7 +26,11 @@ def error404(error_m):
 def main():
     """ Main view page """
     session = Session()
-    computers = session.query(ComputerHardware).order_by(ComputerHardware.date).all()
+    computers = session.query(
+        ComputerHardware.hostname,
+        ComputerHardware.date,
+        func.count(ComputerHardware.hostname).label('count')
+    ).group_by(ComputerHardware.hostname).order_by(ComputerHardware.date).all()
     session.close()
     return dict(computers=computers)
 
@@ -38,7 +43,10 @@ def send_files(filename):
 def computerview(name):
     """ View computer hardware """
     session = Session()
-    computers = session.query(ComputerHardware).filter(ComputerHardware.hostname == name).all()
+    computers = session.query(ComputerHardware).\
+        group_by(ComputerHardware.hostname).\
+        filter(ComputerHardware.hostname == name).\
+        order_by(ComputerHardware.date).all()
     session.close()
     hostname = ""
     if computers:

@@ -26,7 +26,9 @@ def json2tree(data, first= True):
     elif isinstance(data, list):
         for value in data:
             summary = makesummary(value)
-            outdata += "<li><details open><summary>" + summary + "</summary>" + json2tree(value, False) + "</details></li>"
+            outdata += "<li><details open><summary>"
+            outdata += summary + "</summary>"
+            outdata += json2tree(value, False) + "</details></li>"
     else:
         return str(data)
     outdata += "</ul>"
