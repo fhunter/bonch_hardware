@@ -6,6 +6,7 @@
 import datetime
 import socket
 import bottle
+import jsondiff
 #from bottle import view, request, response, static_file, abort, redirect
 from sqlalchemy import or_, func
 from bottle import view, request, abort, static_file
@@ -66,12 +67,12 @@ def post_data():
         hostname = ip_addr
     data = request.json
     session = Session()
-    computer = session.query(ComputerHardware).filter(ComputerHardware.hostname == hostname).order_by(ComputerHardware.date.desc()).limit(1).all()
+    computer = session.query(ComputerHardware).filter(ComputerHardware.hostname == hostname).order_by(ComputerHardware.date.desc()).limit(1).one()
     if computer:
         #Data is present - compare, then update
-        computer[0].date = datetime.datetime.now()
-        computer[0].hardware = data
-        computer[0].ip = ip_addr
+        computer.date = datetime.datetime.now()
+        computer.hardware = data
+        computer.ip = ip_addr
     else:
         #Data not present - insert
         cdata = ComputerHardware(hostname = hostname, ip = ip_addr, date = datetime.datetime.now(), hardware = data)
