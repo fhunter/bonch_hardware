@@ -31,9 +31,12 @@ def main():
     session = Session()
     computers = session.query(
         ComputerHardware.hostname,
-        ComputerHardware.date,
+        func.max(ComputerHardware.date).label('date'),
         func.count(ComputerHardware.hostname).label('count')
-    ).group_by(ComputerHardware.hostname).order_by(ComputerHardware.date).all()
+    ).order_by(ComputerHardware.date.desc())
+    computers = computers.group_by(ComputerHardware.hostname).\
+                order_by(ComputerHardware.date.desc())
+    computers=computers.all()
     session.close()
     return dict(computers=computers)
 
@@ -48,9 +51,8 @@ def computerview(name):
     """ View computer hardware """
     session = Session()
     computers = session.query(ComputerHardware).\
-        group_by(ComputerHardware.hostname).\
-        filter(ComputerHardware.hostname == name).\
-        order_by(ComputerHardware.date).all()
+        order_by(ComputerHardware.date.desc()).\
+        filter(ComputerHardware.hostname == name).all()
     session.close()
     hostname = ""
     if computers:
