@@ -8,9 +8,9 @@ import socket
 import bottle
 import jsondiff
 #from bottle import view, request, response, static_file, abort, redirect
-from data import filter_hardware_report
-from sqlalchemy import or_, func
+from sqlalchemy import func
 from bottle import view, request, abort, static_file
+from data import filter_hardware_report
 import settings
 from my_db import Session, ComputerHardware
 
@@ -18,9 +18,10 @@ app = application = bottle.Bottle()
 
 @app.error(404)
 def error404(error_m):
+    """ Error 404 page """
     e_message = "<html><head>"
     e_message += f"<meta http-equiv=\"refresh\" content=\"5; url='{settings.PREFIX}/'\" />"
-    e_message += "</head><body><h1>Страница не найдена</h1></body></html>"
+    e_message += f"</head><body><h1>Страница не найдена</h1>{error_m}</body></html>"
     return e_message
 
 @app.route(settings.PREFIX + '/')
@@ -38,6 +39,7 @@ def main():
 
 @app.route(settings.PREFIX + r'/img/<filename:re:.*\.svg>')
 def send_files(filename):
+    """ Static file server """
     return static_file(filename, root='./img/', mimetype='image/svg+xml')
 
 @app.route(settings.PREFIX + '/computer/<name>')
@@ -68,16 +70,25 @@ def post_data():
         hostname = ip_addr
     data = filter_hardware_report(request.json)
     session = Session()
-    computer = session.query(ComputerHardware).filter(ComputerHardware.hostname == hostname).order_by(ComputerHardware.date.desc()).limit(1).one()
+    computer = session.query(ComputerHardware).\
+        filter(ComputerHardware.hostname == hostname).\
+        order_by(ComputerHardware.date.desc()).limit(1).one()
     if computer:
-        #Data is present - compare, then update
-        #print(jsondiff.diff(computer.hardware, data, syntax='explicit'))
-        computer.date = datetime.datetime.now()
-        computer.hardware = data
-        computer.ip = ip_addr
+        #Data is present - compare, then add new
+        if jsondiff.diff(computer.hardware, data, syntax='explicit'):
+            cdata = ComputerHardware(
+                hostname = hostname,
+                ip = ip_addr,
+                date = datetime.datetime.now(),
+                hardware = data)
+            session.add(cdata)
     else:
         #Data not present - insert
-        cdata = ComputerHardware(hostname = hostname, ip = ip_addr, date = datetime.datetime.now(), hardware = data)
+        cdata = ComputerHardware(
+            hostname = hostname,
+            ip = ip_addr,
+            date = datetime.datetime.now(),
+            hardware = data)
         session.add(cdata)
     session.commit()
     session.close()
