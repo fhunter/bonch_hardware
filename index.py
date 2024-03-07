@@ -8,6 +8,7 @@ import socket
 import bottle
 import jsondiff
 #from bottle import view, request, response, static_file, abort, redirect
+from data import filter_hardware_report
 from sqlalchemy import or_, func
 from bottle import view, request, abort, static_file
 import settings
@@ -65,11 +66,12 @@ def post_data():
         hostname = socket.gethostbyaddr(ip_addr)[0]
     if hostname == "":
         hostname = ip_addr
-    data = request.json
+    data = filter_hardware_report(request.json)
     session = Session()
     computer = session.query(ComputerHardware).filter(ComputerHardware.hostname == hostname).order_by(ComputerHardware.date.desc()).limit(1).one()
     if computer:
         #Data is present - compare, then update
+        #print(jsondiff.diff(computer.hardware, data, syntax='explicit'))
         computer.date = datetime.datetime.now()
         computer.hardware = data
         computer.ip = ip_addr
