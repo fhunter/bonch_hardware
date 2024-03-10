@@ -9,7 +9,7 @@ import bottle
 import jsondiff
 #from bottle import view, request, response, static_file, abort, redirect
 from sqlalchemy import func
-from bottle import view, request, abort, static_file
+from bottle import view, request, abort, static_file, template
 from data import filter_hardware_report
 import settings
 from my_db import Session, ComputerHardware
@@ -19,10 +19,12 @@ app = application = bottle.Bottle()
 @app.error(404)
 def error404(error_m):
     """ Error 404 page """
-    e_message = "<html><head>"
-    e_message += f"<meta http-equiv=\"refresh\" content=\"5; url='{settings.PREFIX}/'\" />"
-    e_message += f"</head><body><h1>Страница не найдена</h1>{error_m}</body></html>"
-    return e_message
+    return template(
+        '404_template',
+        refresh = 5,
+        url = settings.PREFIX,
+        title = "Страница не найдена",
+        body = error_m.body)
 
 @app.route(settings.PREFIX + '/')
 @view('mainpage')
@@ -46,20 +48,56 @@ def send_files(filename):
     return static_file(filename, root='./img/', mimetype='image/svg+xml')
 
 @app.route(settings.PREFIX + '/computer/<name>')
+@app.route(settings.PREFIX + '/computer/<name>/<version1:int:[0-9]+>')
 @view('computer')
-def computerview(name):
+def computerview(name, version1=None):
     """ View computer hardware """
+    print(version1)
     session = Session()
     computers = session.query(ComputerHardware).\
         order_by(ComputerHardware.date.desc()).\
-        filter(ComputerHardware.hostname == name).all()
+        filter(ComputerHardware.hostname == name)
+    if version1 is not None:
+        # specific version
+        computers = computers[version1:version1+1]
+    else:
+        computers = computers.all()
+        version1 = 0
     session.close()
     hostname = ""
     if computers:
         hostname = computers[0].hostname
     else:
-        abort(404,"Not found")
-    return dict(computers = computers, hostname = hostname)
+        abort(404,f"Компьютер {name} не найден")
+    return dict(computers = computers, hostname = hostname, start = version1)
+
+@app.route(settings.PREFIX + '/computer/<name>/<version1:int:[0-9]+>/<version2:int:[0-9]+>')
+@view('diffview')
+def diffview(name, version1, version2):
+    """ View computer hardware """
+    print(version1,version2)
+    session = Session()
+    computers = session.query(ComputerHardware).\
+        order_by(ComputerHardware.date.desc()).\
+        filter(ComputerHardware.hostname == name)
+    # this is diff
+    try:
+        computer1 = computers[version1]
+        computer2 = computers[version2]
+    except IndexError:
+        abort(404,f"Версии аппаратуры {version1}-{version2} не найдены для {name}")
+    session.close()
+    hostname = ""
+    if computer1 and computer2:
+        hostname = computer2.hostname
+    else:
+        abort(404,f"Компьютер {name} не найден")
+    return dict(computer1 = computer1,
+                computer2 = computer2,
+                hostname = hostname,
+                start = version1,
+                end = version2)
+
 
 @app.route(settings.PREFIX + '/data', method='POST')
 def post_data():
