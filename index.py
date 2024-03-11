@@ -52,7 +52,6 @@ def send_files(filename):
 @view('computer')
 def computerview(name, version1=None):
     """ View computer hardware """
-    print(version1)
     session = Session()
     computers = session.query(ComputerHardware).\
         order_by(ComputerHardware.date.desc()).\
@@ -75,7 +74,6 @@ def computerview(name, version1=None):
 @view('diffview')
 def diffview(name, version1, version2):
     """ View computer hardware """
-    print(version1,version2)
     session = Session()
     computers = session.query(ComputerHardware).\
         order_by(ComputerHardware.date.desc()).\
@@ -92,11 +90,13 @@ def diffview(name, version1, version2):
         hostname = computer2.hostname
     else:
         abort(404,f"Компьютер {name} не найден")
+    diff = jsondiff.diff(computer1.hardware, computer2.hardware, syntax='explicit', marshal=True)
     return dict(computer1 = computer1,
                 computer2 = computer2,
                 hostname = hostname,
                 start = version1,
-                end = version2)
+                end = version2,
+                diff = diff)
 
 
 @app.route(settings.PREFIX + '/data', method='POST')
