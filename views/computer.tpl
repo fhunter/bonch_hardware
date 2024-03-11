@@ -9,7 +9,7 @@
 <tr>
 <td valign=top>
     <a id="link_{{j}}"></a>
-    <a href="{{settings.PREFIX}}/computer/{{i.ip}}/{{j + start}}">{{i.date}}</a>
+    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{j + start}}">{{i.date}}</a>
     <br/>{{i.ip}}<br/>
 %if j > 0:
     <a href="#link_{{j-1}}">&uarr;</a>
