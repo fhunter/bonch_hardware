@@ -112,10 +112,10 @@ def post_data():
     session = Session()
     computer = session.query(ComputerHardware).\
         filter(ComputerHardware.hostname == hostname).\
-        order_by(ComputerHardware.date.desc()).limit(1).one()
+        order_by(ComputerHardware.date.desc()).limit(1).all()
     if computer:
         #Data is present - compare, then add new
-        if jsondiff.diff(computer.hardware, data, syntax='explicit'):
+        if jsondiff.diff(computer[0].hardware, data, syntax='explicit'):
             cdata = ComputerHardware(
                 hostname = hostname,
                 ip = ip_addr,
