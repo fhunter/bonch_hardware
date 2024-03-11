@@ -26,7 +26,8 @@ def json2tree(data, depth= 1, diff= None, lr= None):
         outdata += html_configuration(data["id"], data["configuration"])
 
     outdata += "</table>"
-    outdata += str(diff) + "<br/>"
+    if diff:
+        outdata += str(diff) + "<br/>"
 
     if "children" in data:
         new_diff = {}
@@ -34,6 +35,10 @@ def json2tree(data, depth= 1, diff= None, lr= None):
             if "$update" in diff:
                 if "children" in diff["$update"]:
                     new_diff = diff["$update"]["children"]
-        outdata += '\n'.join([json2tree(data["children"][i], depth + 1, new_diff.get(i), lr) for i in range(0,len(data["children"]))])
+        outdata += '\n'.join([json2tree(
+                                data["children"][i],
+                                depth + 1,
+                                new_diff.get(i),
+                                lr) for i in range(0,len(data["children"]))])
     outdata += """\n</div>"""
     return outdata
