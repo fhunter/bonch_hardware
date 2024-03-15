@@ -13,13 +13,13 @@
     <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{j + start}}">{{i.date}}</a>
     <br/>{{i.ip}}<br/>
 %if j > 0:
-    <a href="#link_{{j-1}}">&uarr;</a>
+    <a href="#link_{{j-1}}"><button>&uarr;</button></a>
 %end
 %if len(computers) > 1:
 &nbsp;{{j + start}}&nbsp;
 %end
 %if j < len(computers)-1:
-    <a href="#link_{{j+1}}">&darr;</a>
+    <a href="#link_{{j+1}}"><button>&darr;</button></a>
 %end
 <br/>
 %if (len(computers) > 0) and (j < len(computers)-1):

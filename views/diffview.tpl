@@ -8,11 +8,11 @@
 <h2>Версия {{start}}<br/>{{computer1.date}}</h2>
 
 %if start > 0:
-    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start-1}}/{{end}}">&larr;</a>
+    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start-1}}/{{end}}"><button>&larr;</button></a>
 %end
 &nbsp;{{start}}&nbsp;
 %if start < length-1:
-    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start+1}}/{{end}}">&rarr;</a>
+    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start+1}}/{{end}}"><button>&rarr;</button></a>
 %end
 
 {{! json2tree(computer1.hardware, diff=diff, lr='l' )}}
@@ -21,11 +21,11 @@
 <h2>Версия {{end}}<br/>{{computer2.date}}</h2>
 
 %if end > 0:
-    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start}}/{{end-1}}">&larr;</a>
+    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start}}/{{end-1}}"><button>&larr;</button></a>
 %end
 &nbsp;{{end}}&nbsp;
 %if end < length-1:
-    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start}}/{{end+1}}">&rarr;</a>
+    <a href="{{settings.PREFIX}}/computer/{{hostname}}/{{start}}/{{end+1}}"><button>&rarr;</button></a>
 %end
 
 {{! json2tree(computer2.hardware, diff=diff, lr='r' )}}
