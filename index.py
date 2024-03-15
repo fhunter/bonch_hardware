@@ -79,6 +79,7 @@ def diffview(name, version1, version2):
         order_by(ComputerHardware.date.desc()).\
         filter(ComputerHardware.hostname == name)
     # this is diff
+    length = computers.count()
     try:
         computer1 = computers[version1]
         computer2 = computers[version2]
@@ -96,6 +97,7 @@ def diffview(name, version1, version2):
                 hostname = hostname,
                 start = version1,
                 end = version2,
+                length = length,
                 diff = diff)
 
 
