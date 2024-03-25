@@ -11,6 +11,9 @@ def filter_hardware_report(data_in):
                 del data_in["configuration"]["modified"]
             if "mounted" in data_in["configuration"]:
                 del data_in["configuration"]["mounted"]
+    if data_in.get("class") == "input":
+        if "logicalname" in data_in:
+            del data_in["logicalname"]
     if "children" in data_in:
         for i in data_in["children"]:
             filter_hardware_report(i)
