@@ -4,7 +4,8 @@ def filter_hardware_report(data_in):
     """ Filter incoming data for frequently changeable attributes
     not relevant to hardware configuration (like current cpu frequency) """
     if data_in.get("id") == "cpu":
-        del data_in["size"]
+        if "size" in data_in:
+            del data_in["size"]
     if data_in.get("class") == "volume":
         if "configuration" in data_in:
             if "modified" in data_in["configuration"]:
