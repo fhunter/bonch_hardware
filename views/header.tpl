@@ -8,6 +8,8 @@
 .id {font-family: monospace;}
 .indented {margin-left: 2em; border-left: dotted thin #dde; padding-bottom: 1em; }
 .node {border: solid thin #ffcc66; padding: 1em; background: #ffffcc; }
+.node-added {border: solid thin #ffcc66; padding: 1em; background: lightgreen; }
+.node-deleted {border: solid thin #ffcc66; padding: 1em; background: tomato; }
 .node-unclaimed {border: dotted thin #c3c3c3; padding: 1em; background: #fafafa; color: red; }
 .node-disabled {border: solid thin #f55; padding: 1em; background: #fee; color: gray; }
 
