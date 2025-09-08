@@ -12,9 +12,15 @@ def filter_hardware_report(data_in):
                 del data_in["configuration"]["modified"]
             if "mounted" in data_in["configuration"]:
                 del data_in["configuration"]["mounted"]
+            if "driverversion" in data_in["configuration"]:
+                del data_in["configuration"]["driverversion"]
     if data_in.get("class") in ["input", "multimedia"]:
         if "logicalname" in data_in:
             del data_in["logicalname"]
+    if data_in.get("class") in ["bus"]:
+        if "vendor" in data_in:
+            if data_in["vendor"].startswith("Linux"):
+                del data_in["vendor"]
     if "children" in data_in:
         for i in data_in["children"]:
             filter_hardware_report(i)
