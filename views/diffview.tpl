@@ -1,4 +1,4 @@
-%include header
+%include("header")
 %import settings
 %from utils import json2tree
 <h1>Сравнение аппаратуры компьютера {{hostname}}</h1>
@@ -32,4 +32,4 @@
 </div>
 </div>
 
-%include footer
+%include("footer")

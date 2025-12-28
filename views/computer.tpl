@@ -1,4 +1,4 @@
-%include header
+%include("header")
 %import settings
 %from utils import json2tree
 <h1>Аппаратура компьютера {{hostname}}</h1>
@@ -33,4 +33,4 @@
 %j=j+1
 %end
 </table>
-%include footer
+%include("footer")
