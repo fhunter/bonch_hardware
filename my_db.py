@@ -5,11 +5,11 @@
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, DateTime, PickleType
+from sqlalchemy import Column, Integer, String, DateTime, JSON
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import func
 
-engine = create_engine('sqlite:///database_.sqlite3', echo=False)
+engine = create_engine('sqlite:///database_.sqlite3', echo=True)
 Session = sessionmaker(bind=engine)
 
 Base = declarative_base()
@@ -22,7 +22,7 @@ class ComputerHardware(Base):
     hostname = Column(String, nullable = False)
     ip = Column(String, nullable = False)
     date = Column(DateTime, nullable = False, default=func.now())
-    hardware = Column(PickleType, nullable = False)
+    hardware = Column(JSON, nullable = False)
 
     def __repr__(self):
         tmpl = "<Computer(hostname='%s' date='%s' ip='%s' hardware='%s')>"
